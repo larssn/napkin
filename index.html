@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Napkin">
+<meta name="theme-color" content="#17201C">
+<title>Napkin</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<style>
+:root{
+  --bg:#F1F2EE; --ink:#17201C; --muted:#5E6B62; --accent:#C8322B; --good:#2E7D4F;
+  --line:#CDD1CA; --card:#FAFAF7; --soft:#E4E7E0; --strike:#B9BEB6;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15191A; --ink:#E8EAE4; --muted:#97A39B; --accent:#E4534B; --good:#5CBF84;
+    --line:#2E3634; --card:#1D2223; --soft:#252B2C; --strike:#4A5350;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:-apple-system,"SF Pro Text",Helvetica,Arial,sans-serif;font-size:17px;line-height:1.4;
+  padding:env(safe-area-inset-top) 0 calc(72px + env(safe-area-inset-bottom));min-height:100vh}
+main{padding:14px 16px 24px;max-width:600px;margin:0 auto}
+h1,h2,h3{margin:0;line-height:1.1;letter-spacing:-0.01em}
+h1{font-size:30px;font-weight:800;text-transform:uppercase}
+h2{font-size:20px;font-weight:700;margin:22px 0 10px}
+h3{font-size:17px;font-weight:700}
+p{margin:0 0 10px}
+.eyebrow{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.mono{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{display:block;width:100%;padding:14px;border:2px solid var(--ink);font-weight:700;font-size:17px;text-align:center;border-radius:4px;margin-top:10px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.quiet{border-color:var(--line);color:var(--muted);font-weight:600}
+.btn:disabled{opacity:.4}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:14px;margin-bottom:12px}
+.card.hit{border-color:var(--good)}
+.card.mainlift{border-left-width:5px;border-left-color:var(--ink)}
+.card.mainlift.hit{border-left-color:var(--good)}
+.effort{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;margin-top:4px}
+.effort.main{color:var(--muted)}
+.effort.acc{color:var(--accent)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.tile{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:14px;margin-bottom:8px}
+.tile.today{border-color:var(--accent)}
+.tile .n{font-weight:700;font-size:18px}
+.tile .s{font-size:13px;color:var(--muted)}
+.tile .arrow{color:var(--accent);font-weight:700}
+.badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:3px;background:var(--soft);color:var(--muted);vertical-align:middle}
+.badge.up{background:var(--good);color:#fff}
+.badge.reset{background:var(--accent);color:#fff}
+.stepper{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:6px;overflow:hidden;height:48px}
+.stepper button{width:52px;font-size:24px;font-weight:700;color:var(--accent);background:var(--soft)}
+.stepper input{width:0;flex:1;border:0;background:var(--card);color:var(--ink);text-align:center;font:inherit;font-weight:700;font-size:22px}
+.sets{display:flex;gap:8px;margin-top:10px}
+.sets input{flex:1;width:0;height:48px;border:1.5px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:center;font:inherit;font-weight:700;font-size:22px}
+.sets input::placeholder{color:var(--strike);font-weight:500}
+.sets input.top{border-color:var(--good)}
+.sets input.low{border-color:var(--accent)}
+input[type=number],input[type=date],select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:10px;width:100%}
+input[type=number]{-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.field{margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 4px;border-bottom:2px solid var(--ink)}
+td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{padding:6px 10px;border:1.5px solid var(--line);border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
+.chip.on{border-color:var(--accent);color:var(--accent)}
+.spark{width:100%;height:120px;display:block}
+.hero{font-size:40px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.hero small{font-size:14px;font-weight:600;color:var(--muted);margin-left:4px}
+.notice{background:var(--soft);border-left:5px solid var(--accent);padding:10px 12px;border-radius:0 4px 4px 0;margin-bottom:12px;font-size:15px}
+textarea{min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:13px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1.5px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;padding:12px 0 10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+nav button.on{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
+.err{color:var(--accent);font-weight:600;margin-top:8px}
+@media (prefers-reduced-motion:no-preference){.tile,.btn{transition:transform .08s}.tile:active,.btn:active{transform:scale(.985)}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav id="nav"></nav>
+<script type="module" src="app.js"></script>
+</body>
+</html>
