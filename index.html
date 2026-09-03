@@ -50,12 +50,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .effort{display:block;font-size:12px;font-weight:600;letter-spacing:.02em;margin-top:4px}
 .effort.main{color:var(--muted)}
 .effort.acc{color:var(--accent)}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.card .row h3{flex:1;min-width:0}
+.card .row .mono{white-space:nowrap;flex:none}
 .tile{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:14px;margin-bottom:8px}
 .tile.today{border-color:var(--accent)}
 .tile .n{font-weight:700;font-size:18px}
 .tile .s{font-size:13px;color:var(--muted)}
 .tile .arrow{color:var(--accent);font-weight:700}
+.vid{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);text-decoration:none;border-bottom:1.5px solid var(--accent);vertical-align:middle;margin-left:6px;padding-bottom:1px}
+h1 .vid{font-size:13px;margin-left:8px}
 .badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:3px;background:var(--soft);color:var(--muted);vertical-align:middle}
 .badge.up{background:var(--good);color:#fff}
 .badge.reset{background:var(--accent);color:#fff}

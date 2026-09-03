@@ -95,7 +95,7 @@ function renderSession() {
         <button type="button" data-inc="${ex}" aria-label="Increase weight">+</button>
       </div>`;
     return `<section class="card${e.main ? ' mainlift' : ''}" data-card="${ex}">
-      <div class="row"><h3>${e.name}</h3><span class="muted small mono">${prescription(ex)}</span></div>
+      <div class="row"><h3>${e.name} <a class="vid" href="${e.video}" target="_blank" rel="noopener" aria-label="Form video for ${e.name}">form ↗</a></h3><span class="muted small mono">${prescription(ex)}</span></div>
       ${effort}
       <div style="margin:6px 0 10px">${badge}</div>
       ${stepper}
@@ -215,7 +215,7 @@ function renderProgress() {
   const rows = hist.slice().reverse().map((h) => `<tr><td>${fmtDate(h.date)}</td><td class="num">${fmtW(h.weight, ex)}</td><td class="num">${h.reps.join(' · ')}</td></tr>`).join('');
   $app.innerHTML = `
     <div class="eyebrow">Progress</div>
-    <h1>${e.name.replace(/ \(.*\)/, '')}</h1>
+    <h1>${e.name.replace(/ \(.*\)/, '')} <a class="vid" href="${e.video}" target="_blank" rel="noopener">form ↗</a></h1>
     <div class="chips" style="margin-top:12px">${chips}</div>
     <div class="card">${sparkline(hist, e)}</div>
     <table><thead><tr><th>Date</th><th style="text-align:right">${e.step === 0 ? '' : 'Weight'}</th><th style="text-align:right">${e.unit === 's' ? 'Seconds' : 'Reps'}</th></tr></thead><tbody>

@@ -1,4 +1,4 @@
-const CACHE = 'napkin-v1';
+const CACHE = 'napkin-v2';
 const ASSETS = ['./', './index.html', './app.js', './logic.js', './manifest.webmanifest', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {
