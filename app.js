@@ -50,12 +50,26 @@ function renderHome() {
       <span class="arrow">${done ? '✓' : '→'}</span></button>`;
   }).join('');
 
+  const recent = data.sessions
+    .slice()
+    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+    .slice(0, 6)
+    .map((s) => `<button class="tile compact" data-sid="${s.id}">
+      <span><span class="n">${TEMPLATES[s.template].name}</span> <span class="s">${esc(fmtDate(s.date))}</span></span>
+      <span class="s">${s.entries.length} exercise${s.entries.length === 1 ? '' : 's'} →</span></button>`)
+    .join('');
+
   $app.innerHTML = `
     <div class="eyebrow">${fmtDate(today)}</div>
     <h1>${todayTpl ? TEMPLATES[todayTpl].name + ' day' : weekday === 3 ? 'Rest day' : 'Weekend'}</h1>
     ${isFirst ? '<div class="notice">Photo day. Same spot, same light, front and side, relaxed.</div>' : ''}
     ${!todayTpl ? `<p class="muted">Nothing scheduled. ${weekday === 3 ? 'Go for a walk.' : 'Weekends are hers.'} You can still log a session below.</p>` : ''}
-    <h2>Sessions</h2>${tiles}`;
+    <h2>Sessions</h2>${tiles}
+    ${recent.length === 0 ? '' : `<h2>Recent</h2>${recent}`}`;
+  $app.querySelectorAll('[data-sid]').forEach((b) => b.addEventListener('click', () => {
+    const s = data.sessions.find((x) => x.id === b.dataset.sid);
+    go({ name: 'session', template: s.template, id: s.id });
+  }));
   $app.querySelectorAll('[data-tpl]').forEach((b) => b.addEventListener('click', () => {
     const existing = doneToday.find((s) => s.template === b.dataset.tpl);
     go({ name: 'session', template: b.dataset.tpl, id: existing ? existing.id : null });
@@ -103,9 +117,14 @@ function renderSession() {
     </section>`;
   }).join('');
 
+  const sessionDate = existing ? existing.date : todayISO();
   $app.innerHTML = `
-    <div class="eyebrow">${existing ? 'Editing · ' : ''}${fmtDate(existing ? existing.date : todayISO())}</div>
+    <div class="eyebrow">${existing ? 'Editing' : 'New session'}</div>
     <h1>${tpl.name}</h1>
+    <div class="field" style="margin:12px 0 14px">
+      <label for="sdate">Date — change it if you're logging an earlier session</label>
+      <input type="date" id="sdate" value="${sessionDate}" max="${todayISO()}">
+    </div>
     <p class="muted small">Weight is prefilled from your last session. Type reps for each set; leave a set empty if you skipped it.</p>
     ${blocks}
     <button class="btn primary" id="save">Save session</button>
@@ -144,10 +163,12 @@ function renderSession() {
       return { ex, weight, reps };
     }).filter((en) => en.reps.length > 0);
     if (entries.length === 0) { alert('Nothing logged yet — enter reps for at least one exercise.'); return; }
+    const date = document.getElementById('sdate').value || todayISO();
     if (existing) {
       existing.entries = entries;
+      existing.date = date;
     } else {
-      data.sessions.push({ id: crypto.randomUUID(), date: todayISO(), template: view.template, entries });
+      data.sessions.push({ id: crypto.randomUUID(), date, template: view.template, entries });
     }
     save(data);
     go({ name: 'home' });
