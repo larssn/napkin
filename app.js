@@ -50,10 +50,12 @@ function renderHome() {
       <span class="arrow">${done ? '✓' : '→'}</span></button>`;
   }).join('');
 
+  const byDateDesc = (a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
   const recent = data.sessions
     .slice()
-    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+    .sort(byDateDesc)          // newest first, so the window is the 6 most recent
     .slice(0, 6)
+    .reverse()                 // then read top-to-bottom in training order: Mon, Tue, Thu, Fri
     .map((s) => `<button class="tile compact" data-sid="${s.id}">
       <span><span class="n">${TEMPLATES[s.template].name}</span> <span class="s">${esc(fmtDate(s.date))}</span></span>
       <span class="s">${s.entries.length} exercise${s.entries.length === 1 ? '' : 's'} →</span></button>`)
