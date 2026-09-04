@@ -3,19 +3,19 @@
 export const EXERCISES = {
   bench:    { name: 'Bench press',              sets: 3, min: 5,  max: 8,  step: 2.5, main: true, video: 'https://www.youtube.com/shorts/hWbUlkb5Ms4' },
   row:      { name: 'Barbell row',              sets: 3, min: 6,  max: 10, step: 2.5, main: true, video: 'https://www.youtube.com/watch?v=Ka-yi9zHp2Q' },
-  dbpress:  { name: 'Dumbbell overhead press',  sets: 3, min: 8,  max: 12, step: 2, video: 'https://www.youtube.com/watch?v=1jYq9QQEWqE' },
+  dbpress:  { name: 'Dumbbell overhead press',  sets: 3, min: 8,  max: 12, step: 2, video: 'https://www.youtube.com/watch?v=ny0HN7yLnII' },
   pulldown: { name: 'Lat pulldown',             sets: 3, min: 8,  max: 12, step: 5, video: 'https://www.youtube.com/watch?v=mUfNdKgsgHI' },
-  squat:    { name: 'Back squat',               sets: 3, min: 5,  max: 8,  step: 2.5, main: true, video: 'https://www.youtube.com/shorts/AIZ8q1qruKw' },
+  squat:    { name: 'Back squat',               sets: 3, min: 5,  max: 8,  step: 2.5, main: true, video: 'https://www.youtube.com/watch?v=jyopTyOjXb0' },
   rdl:      { name: 'Romanian deadlift',        sets: 3, min: 8,  max: 10, step: 2.5, video: 'https://www.youtube.com/watch?v=amLSSb8cXok' },
   lunge:    { name: 'Walking lunge (per leg)',  sets: 2, min: 10, max: 10, step: 2, video: 'https://www.youtube.com/shorts/5eQd_hsXESI' },
   plank:    { name: 'Plank (seconds)',          sets: 3, min: 30, max: 60, step: 0, unit: 's', video: 'https://www.youtube.com/shorts/v25dawSzRTM' },
   ohp:      { name: 'Overhead press',           sets: 3, min: 5,  max: 8,  step: 2.5, main: true, video: 'https://www.youtube.com/watch?v=AhGW3XFG3M8' },
   pullup:   { name: 'Pull-up (added kg)',       sets: 3, min: 5,  max: 10, step: 2.5, main: true, video: 'https://www.youtube.com/watch?v=U6kJQ3CTGis' },
   incline:  { name: 'Incline dumbbell bench',   sets: 3, min: 8,  max: 12, step: 2, video: 'https://www.youtube.com/watch?v=PZecKOpWOrk' },
-  dbrow:    { name: 'Single-arm row (per arm)', sets: 3, min: 10, max: 10, step: 2, video: 'https://www.youtube.com/shorts/aFtWSOruuhs' },
+  dbrow:    { name: 'Single-arm row (per arm)', sets: 3, min: 10, max: 10, step: 2, video: 'https://www.youtube.com/watch?v=4ZpQb1kX7Ew' },
   deadlift: { name: 'Deadlift',                 sets: 3, min: 5,  max: 5,  step: 2.5, main: true, video: 'https://www.youtube.com/shorts/vgBAtiL3IRA' },
-  goblet:   { name: 'Goblet squat',             sets: 3, min: 10, max: 12, step: 2, video: 'https://www.youtube.com/watch?v=k_EhLGvM8TQ' },
-  stepup:   { name: 'Step-up (per leg)',        sets: 2, min: 10, max: 10, step: 2, video: 'https://www.youtube.com/watch?v=vLgNjXucUs0' },
+  goblet:   { name: 'Goblet squat',             sets: 3, min: 10, max: 12, step: 2, video: 'https://www.youtube.com/shorts/FQTcl4MTHIY' },
+  stepup:   { name: 'Step-up (per leg)',        sets: 2, min: 10, max: 10, step: 2, video: 'https://www.youtube.com/watch?v=9ZknEYboBOQ' },
 };
 
 export const TEMPLATES = {
