@@ -56,3 +56,22 @@ assert.throws(() => validateData({ version: 1, sessions: [{ date: 'x', template:
 validateData({ version: 1, sessions, body });
 
 console.log('all logic tests passed');
+
+// --- assisted pull-up: progress runs downward (less machine assistance is harder)
+const pu = (weight, reps) => ({ ex: 'pullup', weight, reps });
+assert.deepEqual(suggest('pullup', [pu(40, [10, 10, 10])]), { weight: 35, reason: 'up' });
+assert.deepEqual(suggest('pullup', [pu(40, [8, 7, 6])]), { weight: 40, reason: 'same' });
+// two misses at the same assistance -> MORE assistance, not less
+assert.deepEqual(suggest('pullup', [pu(40, [3, 3, 2]), pu(40, [4, 3, 3])]), { weight: 45, reason: 'reset' });
+// 20 * 1.1 = 22, which rounds back to 20 on a 5 kg stack; the reset must still move
+assert.deepEqual(suggest('pullup', [pu(20, [3, 3, 2]), pu(20, [4, 3, 3])]), { weight: 25, reason: 'reset' });
+// assistance never goes negative: at 5 kg a good session lands on 0, not -5
+assert.deepEqual(suggest('pullup', [pu(5, [10, 10, 10])]), { weight: 0, reason: 'up' });
+assert.deepEqual(suggest('pullup', [pu(0, [10, 10, 10])]), { weight: 0, reason: 'up' });
+// a normal lift is unaffected, and its reset still moves down
+assert.deepEqual(suggest('bench', [e(40, [8, 8, 8])]), { weight: 42.5, reason: 'up' });
+assert.deepEqual(suggest('bench', [e(40, [4, 4, 3]), e(40, [5, 4, 4])]), { weight: 35, reason: 'reset' });
+// a normal lift whose 10% drop rounds back to itself must still move down one step
+assert.deepEqual(suggest('lunge', [{ ex: 'lunge', weight: 10, reps: [4, 4] }, { ex: 'lunge', weight: 10, reps: [5, 4] }]), { weight: 8, reason: 'reset' });
+
+console.log('assist tests passed');

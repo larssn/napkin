@@ -20,7 +20,7 @@ const todayISO = () => {
 };
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmtDate = (iso) => new Date(iso + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
-const fmtW = (w, ex) => EXERCISES[ex].step === 0 ? '—' : `${w} kg`;
+const fmtW = (w, ex) => EXERCISES[ex].step === 0 ? '—' : `${w} kg${EXERCISES[ex].assist ? ' assist' : ''}`;
 
 function go(v) { view = v; render(); window.scrollTo(0, 0); }
 
@@ -89,13 +89,15 @@ function renderSession() {
     const saved = existing ? existing.entries.find((en) => en.ex === ex) : null;
     const weight = saved ? saved.weight : sug ? sug.weight : 0;
     const last = hist[0];
-    const firstMsg = e.step === 0 ? 'First time — see how long you can hold it' : 'First time — pick a weight you could do 12 times';
+    const firstMsg = e.step === 0 ? 'First time — see how long you can hold it'
+      : e.assist ? 'First time — pick the assistance that lets you finish the sets'
+      : 'First time — pick a weight you could do 12 times';
     const badge = saved ? '' : !sug ? `<span class="badge">${firstMsg}</span>`
-      : sug.reason === 'up' ? `<span class="badge up">↑ Add weight</span>`
-      : sug.reason === 'reset' ? `<span class="badge reset">↓ Reset −10%</span>`
+      : sug.reason === 'up' ? `<span class="badge up">${e.assist ? '↓ Less assistance' : '↑ Add weight'}</span>`
+      : sug.reason === 'reset' ? `<span class="badge reset">${e.assist ? '↑ More assistance' : '↓ Reset −10%'}</span>`
       : `<span class="badge">Last: ${esc(last.reps.join(' · '))}</span>`;
     const effort = e.main
-      ? '<span class="effort main">Main lift · stop 1–2 reps short · rest 2–3 min</span>'
+      ? `<span class="effort main">Main lift · stop 1–2 reps short · rest 2–3 min${e.assist ? ' · lower kg = harder' : ''}</span>`
       : '<span class="effort acc">Last set to failure · rest 60–90 s</span>';
     const sets = Array.from({ length: e.sets }, (_, i) => {
       const v = saved && saved.reps[i] !== undefined ? saved.reps[i] : '';
@@ -105,7 +107,7 @@ function renderSession() {
     const stepper = e.step === 0 ? '' : `
       <div class="stepper">
         <button type="button" data-dec="${ex}" aria-label="Decrease weight">−</button>
-        <input type="number" inputmode="decimal" step="${e.step}" data-w="${ex}" value="${weight}" aria-label="Weight in kg">
+        <input type="number" inputmode="decimal" step="${e.step}" data-w="${ex}" value="${weight}" aria-label="${e.assist ? 'Machine assistance in kg' : 'Weight in kg'}">
         <button type="button" data-inc="${ex}" aria-label="Increase weight">+</button>
       </div>`;
     return `<section class="card${e.main ? ' mainlift' : ''}" data-card="${ex}">

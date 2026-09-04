@@ -10,7 +10,7 @@ export const EXERCISES = {
   lunge:    { name: 'Walking lunge (per leg)',  sets: 2, min: 10, max: 10, step: 2, video: 'https://www.youtube.com/shorts/5eQd_hsXESI' },
   plank:    { name: 'Plank (seconds)',          sets: 3, min: 30, max: 60, step: 0, unit: 's', video: 'https://www.youtube.com/shorts/v25dawSzRTM' },
   ohp:      { name: 'Overhead press',           sets: 3, min: 5,  max: 8,  step: 2.5, main: true, video: 'https://www.youtube.com/watch?v=AhGW3XFG3M8' },
-  pullup:   { name: 'Pull-up (added kg)',       sets: 3, min: 5,  max: 10, step: 2.5, main: true, video: 'https://www.youtube.com/watch?v=U6kJQ3CTGis' },
+  pullup:   { name: 'Assisted pull-up',         sets: 3, min: 5,  max: 10, step: 5, main: true, assist: true, video: 'https://www.youtube.com/watch?v=U6kJQ3CTGis' },
   incline:  { name: 'Incline dumbbell bench',   sets: 3, min: 8,  max: 12, step: 2, video: 'https://www.youtube.com/watch?v=PZecKOpWOrk' },
   dbrow:    { name: 'Single-arm row (per arm)', sets: 3, min: 10, max: 10, step: 2, video: 'https://www.youtube.com/watch?v=4ZpQb1kX7Ew' },
   deadlift: { name: 'Deadlift',                 sets: 3, min: 5,  max: 5,  step: 2.5, main: true, video: 'https://www.youtube.com/shorts/vgBAtiL3IRA' },
@@ -55,16 +55,24 @@ export function missedBottom(ex, entry) {
 
 // history: entries for this exercise, most recent first.
 // Returns { weight, reason } or null when there is no history.
+// On an assisted exercise the number is machine counterweight, so progress runs
+// downward: less assistance is harder. Assistance never goes below zero — at 0 the
+// lift has become an unassisted pull-up.
 export function suggest(ex, history) {
   if (history.length === 0) return null;
   const e = EXERCISES[ex];
+  const dir = e.assist ? -1 : 1;
   const last = history[0];
   if (hitTop(ex, last)) {
-    return { weight: last.weight + e.step, reason: 'up' };
+    return { weight: Math.max(0, last.weight + dir * e.step), reason: 'up' };
   }
   const prev = history[1];
   if (prev && prev.weight === last.weight && missedBottom(ex, last) && missedBottom(ex, prev)) {
-    return { weight: roundToStep(last.weight * 0.9, e.step), reason: 'reset' };
+    // Rounding a 10% change to the nearest step can land back on the same number,
+    // which would leave a stall unresolved. Force at least one step of movement.
+    let w = roundToStep(last.weight * (e.assist ? 1.1 : 0.9), e.step);
+    if (e.assist ? w <= last.weight : w >= last.weight) w = last.weight - dir * e.step;
+    return { weight: Math.max(0, w), reason: 'reset' };
   }
   return { weight: last.weight, reason: 'same' };
 }
