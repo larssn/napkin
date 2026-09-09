@@ -22,7 +22,22 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const fmtDate = (iso) => new Date(iso + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
 const fmtW = (w, ex) => EXERCISES[ex].step === 0 ? '—' : `${w} kg${EXERCISES[ex].assist ? ' assist' : ''}`;
 
-function go(v) { view = v; render(); window.scrollTo(0, 0); }
+// Every view change is a history entry, so the browser back button (and the iOS
+// edge-swipe) leaves a session instead of leaving the app. Actions that finish a
+// view — saving, cancelling, filtering — replace its entry rather than stacking
+// another one, so back never lands on a screen the user already dismissed.
+function go(v, { replace = false } = {}) {
+  view = v;
+  if (replace) history.replaceState(v, ''); else history.pushState(v, '');
+  render();
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('popstate', (ev) => {
+  view = ev.state ?? { name: 'home' };
+  render();
+  window.scrollTo(0, 0);
+});
 
 function render() {
   const tabs = [['home', 'Lift'], ['body', 'Body'], ['progress', 'Progress'], ['backup', 'Backup']];
@@ -173,16 +188,16 @@ function renderSession() {
       data.sessions.push({ id: crypto.randomUUID(), date, template: view.template, entries });
     }
     save(data);
-    go({ name: 'home' });
+    go({ name: 'home' }, { replace: true });
   });
   const del = document.getElementById('delete');
   if (del) del.addEventListener('click', () => {
     if (!confirm('Delete this session? This cannot be undone.')) return;
     data.sessions = data.sessions.filter((s) => s.id !== existing.id);
     save(data);
-    go({ name: 'home' });
+    go({ name: 'home' }, { replace: true });
   });
-  document.getElementById('cancel').addEventListener('click', () => go({ name: 'home' }));
+  document.getElementById('cancel').addEventListener('click', () => go({ name: 'home' }, { replace: true }));
 }
 
 // ---------- Body ----------
@@ -244,7 +259,7 @@ function renderProgress() {
     <table><thead><tr><th>Date</th><th style="text-align:right">${e.step === 0 ? '' : 'Weight'}</th><th style="text-align:right">${e.unit === 's' ? 'Seconds' : 'Reps'}</th></tr></thead><tbody>
       ${rows || '<tr><td colspan="3" class="muted">No sessions logged with this exercise yet.</td></tr>'}
     </tbody></table>`;
-  $app.querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => go({ name: 'progress', ex: c.dataset.ex })));
+  $app.querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => go({ name: 'progress', ex: c.dataset.ex }, { replace: true })));
 }
 
 function sparkline(hist, e) {
@@ -296,7 +311,7 @@ function renderBackup() {
       if (!confirm(`Replace current data with ${parsed.sessions.length} sessions and ${parsed.body.length} body entries?`)) return;
       data = parsed;
       save(data);
-      go({ name: 'home' });
+      go({ name: 'home' }, { replace: true });
     } catch (ex) {
       err.textContent = ex instanceof SyntaxError ? "That isn't valid JSON — paste the whole backup file, including the { and }." : ex.message;
     }
@@ -305,7 +320,7 @@ function renderBackup() {
     if (!confirm('Delete ALL sessions and body entries? Export a backup first if you want to keep them.')) return;
     data = emptyData();
     save(data);
-    go({ name: 'home' });
+    go({ name: 'home' }, { replace: true });
   });
 }
 
@@ -322,4 +337,5 @@ async function shareText(text, filename, type) {
 }
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+history.replaceState(view, '');
 render();
